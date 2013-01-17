@@ -2,11 +2,10 @@
 return array(
     'controllers' => array(
         'invokables' => array(
-            'TokenAuthentication\Controller\Token' => 'TokenAuthentication\Controller\TokenController',
+            'Token' => 'TokenAuthentication\Controller\TokenController',
             'TokenWebAPI-1_3' => 'TokenAuthentication\Controller\WebAPIController',
         ),
     ),
-    'router' => array(
         'webapi_routes' => array(
         	'tokenGenerate' => array(
                 'type'    => 'Literal',
@@ -21,6 +20,7 @@ return array(
                 'may_terminate' => true,
         	),
         ),
+    'router' => array(
         'routes' => array(
             'token-authentication' => array(
                 'type'    => 'Literal',
