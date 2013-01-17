@@ -9,19 +9,14 @@
 
 namespace TokenAuthentication\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use ZendServer\Mvc\Controller\ActionController as AbstractActionController;
 
-class TokenController extends AbstractActionController
-{
-    public function indexAction()
-    {
-        return array();
-    }
-
-    public function fooAction()
-    {
-        // This shows the :controller and :action parameters in default route
-        // are working when you browse to /token/token/foo
+class TokenController extends AbstractActionController {
+	
+    public function indexAction() {
+    	/// retrieve the token parameter
+    	/// authenticate the token
+    	/// create a session and redirect to target
         return array();
     }
 }
