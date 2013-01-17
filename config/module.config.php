@@ -3,9 +3,24 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'TokenAuthentication\Controller\Token' => 'TokenAuthentication\Controller\TokenController',
+            'TokenWebAPI-1_3' => 'TokenAuthentication\Controller\WebAPIController',
         ),
     ),
     'router' => array(
+        'webapi_routes' => array(
+        	'tokenGenerate' => array(
+                'type'    => 'Literal',
+                'options' => array(
+                    'route'    => '/Api/tokenGenerate',
+                    'defaults' => array(
+                        'controller'    => 'TokenWebAPI',
+                        'action'        => 'tokenGenerate',
+                    	'versions'		=> array('1.3')
+                    ),
+                ),
+                'may_terminate' => true,
+        	),
+        ),
         'routes' => array(
             'token-authentication' => array(
                 'type'    => 'Literal',
