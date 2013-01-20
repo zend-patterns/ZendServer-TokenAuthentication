@@ -3,21 +3,16 @@
 namespace TokenAuthentication\Controller;
 
 use ZendServer\Mvc\Controller\WebAPIActionController;
+use Users;
+use Zend\Crypt\Hmac;
+use Zend\Math\Rand;
 
-/**
- * WebAPIController
- *
- * @author
- *
- * @version
- *
- */
 class WebAPIController extends WebAPIActionController {
 	
 	public function tokenGenerateAction() {
-		// generate token, assign bound user to the token
-		// store the token in a common storage facility
-		
-		return array();
+		$tokenMapper = $this->getLocator()->get('TokenAuthentication\Mapper\Token');
+		$token = $tokenMapper->generateTokenByIdentity();
+		return array('token' => $token);
 	}
+	
 }

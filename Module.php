@@ -10,9 +10,10 @@
 namespace TokenAuthentication;
 
 use Zend\ModuleManager\Feature\AutoloaderProviderInterface;
-use Zend\Mvc\ModuleRouteListener;
+use Zend\ModuleManager\Feature\ServiceProviderInterface;
+use TokenAuthentication\Mapper\Token;
 
-class Module implements AutoloaderProviderInterface
+class Module implements AutoloaderProviderInterface, ServiceProviderInterface
 {
     public function getAutoloaderConfig()
     {
@@ -29,13 +30,18 @@ class Module implements AutoloaderProviderInterface
     {
         return include __DIR__ . '/config/module.config.php';
     }
-
-    public function onBootstrap($e)
-    {
-        // You may not need to do this if you're doing it elsewhere in your
-        // application
-        $eventManager        = $e->getApplication()->getEventManager();
-        $moduleRouteListener = new ModuleRouteListener();
-        $moduleRouteListener->attach($eventManager);
+    
+    public function getServiceConfig() {
+    	return array(
+    				'factories' => array(
+    					'TokenAuthentication\Mapper\Token' => function($sm){
+	    					$mapper = new Token();
+	    					$mapper->setTableGateway($sm->get('guiToken_tg'));
+	    					$mapper->setWebapiMapper($sm->get('WebAPI\Db\Mapper'));
+	    					return $mapper;
+	    				}
+    				)
+    			);
     }
+    
 }
