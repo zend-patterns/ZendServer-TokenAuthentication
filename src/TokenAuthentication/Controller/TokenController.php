@@ -15,8 +15,11 @@ class TokenController extends AbstractActionController {
 	
     public function indexAction() {
     	/// retrieve the token parameter
+    	$tokenMapper = $this->getLocator()->get('TokenAuthentication\Mapper\Token');
     	/// authenticate the token
+    	
     	/// create a session and redirect to target
-        return array();
+    	$this->redirect()->toRoute('home');
+        return $this->getResponse();
     }
 }
