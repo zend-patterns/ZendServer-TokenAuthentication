@@ -34,7 +34,7 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 	 * @param string $username
 	 * 
 	 */
-	public function findToken($username) {
+	public function findTokenByName($username) {
 		$this->gc();
 		return $this->select(array('USERNAME' => $username))->current();
 	}
@@ -60,8 +60,8 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 		}
 		
 		$this->getTableGateway()->insert(array('USERNAME' => $identity, 'TOKEN' => $token, 'CREATION_TIME' => $creationTime));
-		
-		return $token;
+		$tokenId = $this->getTableGateway()->getLastInsertValue();
+		return current($this->select(array('TOKEN_ID' => $tokenId)));
 	}
 	
 	/**
@@ -89,9 +89,9 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 	
 	private function gc() {
 		if (appModule::isSingleServer()) {
-	 		$this->getTableGateway()->delete("CREATION_TIME + 30 < strftime('%s', 'now')");
+	 		$this->getTableGateway()->delete("CREATION_TIME + " . self::TOKEN_EXPIRATION ." < strftime('%s', 'now')");
 		} else {
-	 		$this->getTableGateway()->delete("CREATION_TIME + 30 < UNIX_TIMESTAMP()");
+	 		$this->getTableGateway()->delete("CREATION_TIME + " . self::TOKEN_EXPIRATION ." < UNIX_TIMESTAMP()");
 		}
 	}
 	

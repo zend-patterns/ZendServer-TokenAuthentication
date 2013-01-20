@@ -1,1 +1,7 @@
-<?php print_r($token)?>
+<responseData>
+	<authenticationToken>
+		<token><?php echo $token['TOKEN'] ?></token>
+		<expires><?php echo $this->webapidate($token['CREATION_TIME'] + TokenAuthentication\Mapper\Token::TOKEN_EXPIRATION) ?></expires>
+		<expiresTimestamp><?php echo $token['CREATION_TIME'] + TokenAuthentication\Mapper\Token::TOKEN_EXPIRATION ?></expires>
+	</authenticationToken>
+</responseData>
