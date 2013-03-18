@@ -25,7 +25,7 @@ class TokenController extends AbstractActionController {
     	$hash = $this->validateToken($params['hash']);
     	/// create a session and redirect to target
     	$authService = $this->getLocator()->get('Zend\Authentication\AuthenticationService'); /* @var $authService AuthenticationService */
-    	$tokenAdapter = $this->getLocator()->get('TokenAdapter'); /* @var $authService TokenAdapter */
+    	$tokenAdapter = $this->getLocator()->get('TokenAdapter'); /* @var $tokenAdapter TokenAdapter */
     	$tokenAdapter->setToken($hash);
     	$result = $authService->authenticate($tokenAdapter);
     	

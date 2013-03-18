@@ -9,6 +9,7 @@ use WebAPI\Db\Mapper;
 use Zend\Math\Rand;
 use ZendServer\Exception;
 use ZendServer\Set;
+use ZendServer\Log\Log;
 use WebAPI\Db\ApiKeyContainer;
 use Users;
 use Users\IdentityAwareInterface;
@@ -102,9 +103,9 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 	private function gc() {
 		$expire = self::TOKEN_EXPIRATION;
 		if (appModule::isSingleServer()) {
-	 		$this->getTableGateway()->delete("CREATION_TIME + {$expire} < strftime('%s', 'now')");
+	 		$this->getTableGateway()->delete("(CREATION_TIME + {$expire}) < CAST(strftime('%s', 'now') AS integer)");
 		} else {
-	 		$this->getTableGateway()->delete("CREATION_TIME + {$expire} < UNIX_TIMESTAMP()");
+	 		$this->getTableGateway()->delete("(CREATION_TIME + {$expire}) < UNIX_TIMESTAMP()");
 		}
 	}
 	
