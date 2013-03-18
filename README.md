@@ -27,9 +27,11 @@ Expected xml output (json output available too):
     </zendServerAPIResponse>
     
 Retrieve the token hash and browse to:
+
     <ZendServer>:10081/ZendServer/Token?hash=<token hash>
 
 In our example:
+
     <ZendServer>:10081/ZendServer/Token?hash=1c6beff1468ee20fce4c3d76774ff93d200977fac70a46ca33661c45fe2e2e04
 
 This action should login you directly into ZendServer as the user bound to the apiKey used to generate the token.
