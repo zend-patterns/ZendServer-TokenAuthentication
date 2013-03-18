@@ -10,16 +10,43 @@
 namespace TokenAuthentication\Controller;
 
 use ZendServer\Mvc\Controller\ActionController as AbstractActionController;
+use TokenAuthentication\Mapper\Token;
+use Zend\Validator\Regex;
+use TokenAuthentication\Exception;
+use Zend\Authentication\AuthenticationService;
+use TokenAuthentication\Authentication\Adapter\TokenAdapter;
+use TokenAuthentication;
+use ZendServer\Log\Log;
 
 class TokenController extends AbstractActionController {
 	
     public function indexAction() {
-    	/// retrieve the token parameter
-    	$tokenMapper = $this->getLocator()->get('TokenAuthentication\Mapper\Token');
-    	/// authenticate the token
-    	
+    	$params = $this->getParameters(array('hash' => ''));
+    	$hash = $this->validateToken($params['hash']);
     	/// create a session and redirect to target
-    	$this->redirect()->toRoute('home');
+    	$authService = $this->getLocator()->get('Zend\Authentication\AuthenticationService'); /* @var $authService AuthenticationService */
+    	$tokenAdapter = $this->getLocator()->get('TokenAdapter'); /* @var $authService TokenAdapter */
+    	$tokenAdapter->setToken($hash);
+    	$result = $authService->authenticate($tokenAdapter);
+    	
+    	if ($result->isValid()) {
+	    	$this->redirect()->toRoute('home');
+    	} else {
+    		Log::warn('Token authentication failed, redirect to login page');
+    		$this->redirect()->toRoute('login');
+    	}
         return $this->getResponse();
+    }
+    /**
+     * @param string $token
+     * @throws Exception
+     * @return string
+     */
+    private function validateToken($token) {
+    	$validator = new Regex('#^[[:alnum:]]{64}$#');
+    	if ($validator->isValid($token)) {
+    		return $token;
+    	}
+    	throw new Exception('Token parameter is invalid');
     }
 }

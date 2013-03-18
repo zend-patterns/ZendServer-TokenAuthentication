@@ -8,10 +8,12 @@ use Zend\Crypt\Hmac;
 use WebAPI\Db\Mapper;
 use Zend\Math\Rand;
 use ZendServer\Exception;
+use ZendServer\Set;
 use WebAPI\Db\ApiKeyContainer;
 use Users;
 use Users\IdentityAwareInterface;
 use Zend\Db\Sql\Expression;
+use TokenAuthentication\Exception as TokenException;
 
 class Token extends MapperAbstract implements IdentityAwareInterface {
 	
@@ -19,6 +21,8 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 	 * Token expiration in seconds
 	 */
 	const TOKEN_EXPIRATION = 30;
+	
+	protected $setClass = '\TokenAuthentication\Mapper\Container';
 	
 	/**
 	 * @var Mapper
@@ -31,23 +35,31 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 	private $identity;
 	
 	/**
-	 * @param string $username
-	 * 
+	 * @param string $hash
+	 * @return Container
 	 */
-	public function findTokenByName($username) {
+	public function findTokenByHash($hash) {
 		$this->gc();
-		return $this->select(array('USERNAME' => $username))->current();
+		$result = $this->select(array('TOKEN' => $hash));
+		if ($result instanceof Set) {
+			return $result->current();
+		}
+		throw new TokenException(_t('No token found')); // TRANSLATE
 	}
 	
+	/**
+	 * @throws Exception
+	 * @return \ArrayObject
+	 */
 	public function generateTokenByIdentity() {
 		$identity = $this->identity->getIdentity();
 		if (! $identity) {
-			throw new Exception(_t('No identity set'));
+			throw new TokenException(_t('No identity set'));
 		}
 		
 		$key = $this->getWebapiMapper()->findKeyByName($identity);
 		if (! ($key instanceof ApiKeyContainer)) {
-			throw new Exception(_t('Key name was not found'));
+			throw new TokenException(_t('Key name was not found'));
 		}
 		
 		$token = Hmac::compute($key->getHash(), 'sha256', Rand::getString(Hmac::getOutputSize('sha256'), null, true));
@@ -59,7 +71,7 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 			
 		}
 		
-		$this->getTableGateway()->insert(array('USERNAME' => $identity, 'TOKEN' => $token, 'CREATION_TIME' => $creationTime));
+		$this->getTableGateway()->insert(array('USERNAME' => $key->getUsername(), 'TOKEN' => $token, 'CREATION_TIME' => $creationTime));
 		$tokenId = $this->getTableGateway()->getLastInsertValue();
 		return current($this->select(array('TOKEN_ID' => $tokenId)));
 	}
@@ -88,10 +100,11 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 	}
 	
 	private function gc() {
+		$expire = self::TOKEN_EXPIRATION;
 		if (appModule::isSingleServer()) {
-	 		$this->getTableGateway()->delete("CREATION_TIME + " . self::TOKEN_EXPIRATION ." < strftime('%s', 'now')");
+	 		$this->getTableGateway()->delete("CREATION_TIME + {$expire} < strftime('%s', 'now')");
 		} else {
-	 		$this->getTableGateway()->delete("CREATION_TIME + " . self::TOKEN_EXPIRATION ." < UNIX_TIMESTAMP()");
+	 		$this->getTableGateway()->delete("CREATION_TIME + {$expire} < UNIX_TIMESTAMP()");
 		}
 	}
 	
