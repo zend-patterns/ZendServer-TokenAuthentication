@@ -73,7 +73,7 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 		
 		$this->getTableGateway()->insert(array('USERNAME' => $key->getUsername(), 'TOKEN' => $token, 'CREATION_TIME' => $creationTime));
 		$tokenId = $this->getTableGateway()->getLastInsertValue();
-		return current($this->select(array('TOKEN_ID' => $tokenId)));
+		return $this->select(array('TOKEN_ID' => $tokenId))->current();
 	}
 	
 	/**

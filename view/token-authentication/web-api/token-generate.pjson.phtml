@@ -1,6 +1,7 @@
+<?php $token = isset($token) ? $token : new \TokenAuthentication\Mapper\Container() ?>
 responseData:<?php echo $this->json(
 		array('authenticationToken' => 
-				array('token' => $token['TOKEN'], 
-						'expires' => $this->webapidate($token['CREATION_TIME'] + TokenAuthentication\Mapper\Token::TOKEN_EXPIRATION),
-						'expiresTimestamp' => $token['CREATION_TIME'] + TokenAuthentication\Mapper\Token::TOKEN_EXPIRATION
+				array('token' => $token->getHash(), 
+						'expires' => $this->webapidate($token->getCreationTime() + TokenAuthentication\Mapper\Token::TOKEN_EXPIRATION),
+						'expiresTimestamp' => $token->getCreationTime() + TokenAuthentication\Mapper\Token::TOKEN_EXPIRATION
 						)));
