@@ -60,15 +60,25 @@ class Module implements AutoloaderProviderInterface, ServiceProviderInterface
 
     public function onBootstrap(MvcEvent $e) {
     	$events = $e->getApplication()->getEventManager(); /* @var $events EventManager */
-    	$events->attach(MvcEvent::EVENT_ROUTE, array($this, 'overrideSessionControl'),-800);
+    	$events->attach(MvcEvent::EVENT_ROUTE, array($this, 'overrideSessionControl'),1);
+    	$events->attach(MvcEvent::EVENT_ROUTE, array($this, 'postSessionControlCorrect'),-1000);
     }
     
     public function overrideSessionControl(MvcEvent $e) {
     	Log::debug(__METHOD__);
-    	$routeMatch = $e->getRouteMatch(); /* @var $routeMatch RouteMatch */
-    	if ($routeMatch->getParam('controller') == 'Token') {
+    	if (false !== strpos($e->getRequest()->getRequestUri(), '/ZendServer/Token')) {
     		Log::info('Session control override: Token access');
-    		$e->setParam('useSessionControl', false);
+    		$e->setParam('tokenController', true);
+    	}
+    }
+    
+    public function postSessionControlCorrect(MvcEvent $e) {
+    	Log::debug(__METHOD__);
+    	if ($e->getParam('tokenController', false)) {
+    		Log::info('Token authentication requested, revert back to Token controller');
+    		$routeMatch = $e->getRouteMatch(); /* @var $routeMatch RouteMatch */
+    		$routeMatch->setParam('controller', 'Token');
+    		$routeMatch->setParam('action', 'index');
     	}
     }
 }
