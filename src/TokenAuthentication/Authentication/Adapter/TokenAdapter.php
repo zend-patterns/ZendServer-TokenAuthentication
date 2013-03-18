@@ -8,6 +8,7 @@ use Zend\Authentication\Result;
 use TokenAuthentication\Exception;
 use Users\Identity;
 use Users\Db\Mapper;
+use ZendServer\Log\Log;
 class TokenAdapter implements AdapterInterface {
 	
 	/**
@@ -35,6 +36,7 @@ class TokenAdapter implements AdapterInterface {
     	try {
     		$token = $tokenMapper->findTokenByHash($this->token);
     	} catch (Exception $ex) {
+    		Log::debug('boom'.$ex->getMessage());
     		return new Result(Result::FAILURE_CREDENTIAL_INVALID, $this->token);
     	}
     	
@@ -43,6 +45,7 @@ class TokenAdapter implements AdapterInterface {
 	    	$username = $token->getUsername();
 	    	$user = $this->getUsersMapper()->findUserByName($username);
     	} catch (\ZendServer\Exception $ex) {
+    		Log::debug('boom'.$ex->getMessage());
     		return new Result(Result::FAILURE_IDENTITY_NOT_FOUND, $username, array($ex->getMessage()));
     	}
     	

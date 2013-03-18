@@ -63,6 +63,9 @@ class Token extends MapperAbstract implements IdentityAwareInterface {
 			throw new TokenException(_t('Key name was not found'));
 		}
 		
+		/// clean out any current existing key
+		$this->getTableGateway()->delete(array('USERNAME' => $key->getUsername()));
+		
 		$token = Hmac::compute($key->getHash(), 'sha256', Rand::getString(Hmac::getOutputSize('sha256'), null, true));
 		
 		if (appModule::isSingleServer()) {
