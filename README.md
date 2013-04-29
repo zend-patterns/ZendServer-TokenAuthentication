@@ -1,4 +1,4 @@
-Token Authentication module for use in ZendServer 6.1
+Token Authentication module for use in ZendServer 6.0.1
 -----------------------------------------------------
 
 Installation:
@@ -9,7 +9,7 @@ Add 'TokenAuthentication' to modules list in <install_dir>/gui/config/applicatio
 Note: This installation process or parts of it may have to be executed following upgrades or updates to the application.
 
 Usage:
-Use a signed webapi request to <ZendServer>:10081/ZendServer/Api/generateToken to generate a token.
+Use a signed webapi request to <ZendServer>:10081/ZendServer/Api/tokenGenerate to generate a token.
 Expected xml output (json output available too):
 
     <zendServerAPIResponse xmlns="http://www.zend.com/server/api/1.3">
