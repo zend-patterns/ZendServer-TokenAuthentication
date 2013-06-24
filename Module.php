@@ -17,6 +17,8 @@ use Zend\EventManager\EventManager;
 use Zend\Mvc\Router\Http\RouteMatch;
 use ZendServer\Log\Log;
 use TokenAuthentication\Authentication\Adapter\TokenAdapter;
+use Zend\Db\TableGateway\TableGateway;
+use Application\Db\Connector;
 
 class Module implements AutoloaderProviderInterface, ServiceProviderInterface
 {
@@ -44,7 +46,7 @@ class Module implements AutoloaderProviderInterface, ServiceProviderInterface
     				'factories' => array(
     					'TokenAuthentication\Mapper\Token' => function($sm){
 	    					$mapper = new Token();
-	    					$mapper->setTableGateway($sm->get('guiToken_tg'));
+	    					$mapper->setTableGateway(new TableGateway('GUI_USERS_TOKEN', $sm->get(Connector::DB_CONTEXT_GUI)));
 	    					$mapper->setWebapiMapper($sm->get('WebAPI\Db\Mapper'));
 	    					return $mapper;
 	    				},
