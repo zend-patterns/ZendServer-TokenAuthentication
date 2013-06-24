@@ -1,4 +1,4 @@
-Token Authentication module for use in ZendServer 6.1
+Token Authentication module for use in ZendServer 6.2
 -----------------------------------------------------
 
 Installation:

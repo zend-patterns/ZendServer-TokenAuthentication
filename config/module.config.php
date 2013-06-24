@@ -62,17 +62,4 @@ return array(
             'TokenAuthentication' => __DIR__ . '/../view',
         ),
     ),
-	'di' => array(
-		'instance' => array(
-			'alias' => array(
-				'guiToken_tg' => 'Zend\Db\TableGateway\TableGateway',
-			),
-			'guiToken_tg' => array(
-				'parameters' => array(
-					'table' => 'GUI_USERS_TOKEN',
-					'adapter' => 'guiDbAdapter',
-				)
-			),
-		)
-	)
 );
