@@ -1,10 +1,10 @@
-Token Authentication module for use in ZendServer 6.2
+Token Authentication module for use in ZendServer 6.3
 -----------------------------------------------------
 
 Installation:
-Extract module content into <install_dir>/gui/vendor/TokenAuthentication
+Extract module content into <install_dir>/gui/3rdparty/TokenAuthentication
 Run appropriate SQL file found in utils/sqls (sqlite or mysql, as needed)
-Add 'TokenAuthentication' to modules list in <install_dir>/gui/config/application.config.php
+Add 'TokenAuthentication' to modules list in <install_dir>/gui/3rdparty/modules.config.php
 
 Note: This installation process or parts of it may have to be executed following upgrades or updates to the application.
 
