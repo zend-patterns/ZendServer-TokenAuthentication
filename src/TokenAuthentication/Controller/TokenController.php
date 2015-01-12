@@ -30,6 +30,7 @@ class TokenController extends AbstractActionController {
     	$result = $authService->authenticate($tokenAdapter);
     	
     	if ($result->isValid()) {
+    		$result->getIdentity()->setLoggedIn();
 	    	$this->redirect()->toRoute('home');
     	} else {
     		Log::warn('Token authentication failed, redirect to login page');
